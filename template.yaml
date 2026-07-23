@@ -1,0 +1,331 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Description: >
+  Enterprise AI Support Agent using AWS Lambda, API Gateway,
+  Amazon Bedrock, DynamoDB, Amazon S3 and Amazon CloudFront.
+
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 3008
+    Architectures:
+      - x86_64
+
+Resources:
+  SupportRequestsTable:
+    Type: AWS::DynamoDB::Table
+
+    Properties:
+      TableName: enterprise-ai-support-requests
+
+      BillingMode: PAY_PER_REQUEST
+
+      AttributeDefinitions:
+        - AttributeName: request_id
+          AttributeType: S
+
+      KeySchema:
+        - AttributeName: request_id
+          KeyType: HASH
+
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+  PolicyDocumentsBucket:
+    Type: AWS::S3::Bucket
+
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+
+  FrontendBucket:
+    Type: AWS::S3::Bucket
+
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+
+  FrontendOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+
+    Properties:
+      OriginAccessControlConfig:
+        Name:
+          Fn::Sub: "${AWS::StackName}-frontend-oac"
+
+        Description: >
+          CloudFront Origin Access Control for the private
+          frontend S3 bucket.
+
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  FrontendDistribution:
+    Type: AWS::CloudFront::Distribution
+
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment:
+          Fn::Sub: "${AWS::StackName} production frontend"
+
+        DefaultRootObject: index.html
+        HttpVersion: http2
+        PriceClass: PriceClass_100
+
+        Origins:
+          - Id: FrontendS3Origin
+
+            DomainName:
+              Fn::GetAtt:
+                - FrontendBucket
+                - RegionalDomainName
+
+            OriginAccessControlId:
+              Ref: FrontendOriginAccessControl
+
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+
+        DefaultCacheBehavior:
+          TargetOriginId: FrontendS3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          Compress: true
+
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+
+          CachedMethods:
+            - GET
+            - HEAD
+
+          ForwardedValues:
+            QueryString: false
+
+            Cookies:
+              Forward: none
+
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 0
+
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 0
+
+  FrontendBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+
+    Properties:
+      Bucket:
+        Ref: FrontendBucket
+
+      PolicyDocument:
+        Version: "2012-10-17"
+
+        Statement:
+          - Sid: AllowCloudFrontReadAccess
+            Effect: Allow
+
+            Principal:
+              Service: cloudfront.amazonaws.com
+
+            Action:
+              - s3:GetObject
+
+            Resource:
+              Fn::Sub:
+                - "${FrontendBucketArn}/*"
+                - FrontendBucketArn:
+                    Fn::GetAtt:
+                      - FrontendBucket
+                      - Arn
+
+            Condition:
+              StringEquals:
+                AWS:SourceArn:
+                  Fn::Sub:
+                    - "arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${DistributionId}"
+                    - DistributionId:
+                        Ref: FrontendDistribution
+
+  SupportHttpApi:
+    Type: AWS::Serverless::HttpApi
+
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+
+        AllowHeaders:
+          - "Content-Type"
+
+        AllowMethods:
+          - "POST"
+          - "OPTIONS"
+
+        MaxAge: 600
+
+  SupportAgentFunction:
+    Type: AWS::Serverless::Function
+
+    Metadata:
+      Dockerfile: Dockerfile.lambda
+      DockerContext: ./backend
+      DockerTag: python3.12-v1
+
+    Properties:
+      PackageType: Image
+
+      ImageConfig:
+        Command:
+          - app.lambda_handler.handler
+
+      Environment:
+        Variables:
+          APP_ENV: production
+          AWS_REGION_NAME: eu-west-2
+
+          SUPPORT_REQUESTS_TABLE:
+            Ref: SupportRequestsTable
+
+          POLICY_BUCKET_NAME:
+            Ref: PolicyDocumentsBucket
+
+          POLICY_S3_PREFIX: policies/
+
+      Policies:
+        - Statement:
+            - Effect: Allow
+
+              Action:
+                - bedrock:InvokeModel
+                - bedrock:InvokeModelWithResponseStream
+
+              Resource: "*"
+
+            - Effect: Allow
+
+              Action:
+                - dynamodb:PutItem
+                - dynamodb:GetItem
+
+              Resource:
+                Fn::GetAtt:
+                  - SupportRequestsTable
+                  - Arn
+
+            - Effect: Allow
+
+              Action:
+                - s3:ListBucket
+
+              Resource:
+                Fn::GetAtt:
+                  - PolicyDocumentsBucket
+                  - Arn
+
+            - Effect: Allow
+
+              Action:
+                - s3:GetObject
+
+              Resource:
+                Fn::Sub:
+                  - "${PolicyBucketArn}/policies/*"
+                  - PolicyBucketArn:
+                      Fn::GetAtt:
+                        - PolicyDocumentsBucket
+                        - Arn
+
+      Events:
+        RootApi:
+          Type: HttpApi
+
+          Properties:
+            ApiId:
+              Ref: SupportHttpApi
+
+            Path: /
+            Method: ANY
+
+        ProxyApi:
+          Type: HttpApi
+
+          Properties:
+            ApiId:
+              Ref: SupportHttpApi
+
+            Path: /{proxy+}
+            Method: ANY
+
+Outputs:
+  ApiUrl:
+    Description: Public HTTP API URL
+
+    Value:
+      Fn::Sub: >
+        https://${SupportHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}
+
+  FunctionName:
+    Description: Lambda function name
+
+    Value:
+      Ref: SupportAgentFunction
+
+  RequestsTableName:
+    Description: DynamoDB support requests table
+
+    Value:
+      Ref: SupportRequestsTable
+
+  PolicyBucketName:
+    Description: S3 bucket containing policy documents
+
+    Value:
+      Ref: PolicyDocumentsBucket
+
+  FrontendBucketName:
+    Description: Private S3 bucket containing the production frontend
+
+    Value:
+      Ref: FrontendBucket
+
+  FrontendDistributionId:
+    Description: CloudFront distribution ID
+
+    Value:
+      Ref: FrontendDistribution
+
+  FrontendUrl:
+    Description: Public CloudFront frontend URL
+
+    Value:
+      Fn::Sub:
+        - "https://${DistributionDomain}"
+        - DistributionDomain:
+            Fn::GetAtt:
+              - FrontendDistribution
+              - DomainName

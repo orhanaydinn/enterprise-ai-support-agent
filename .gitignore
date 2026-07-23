@@ -1,0 +1,43 @@
+# Python
+.venv/
+backend/.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Node and Vite
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+
+# AWS SAM
+.aws-sam/
+
+# Local helper files
+dynamodb-key.json
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

@@ -1,0 +1,13 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "enterprise-ai-support-agent"
+resolve_s3 = true
+s3_prefix = "enterprise-ai-support-agent"
+region = "eu-west-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = ["SupportAgentFunction=961178968547.dkr.ecr.eu-west-2.amazonaws.com/enterpriseaisupportagent0962a9aa/supportagentfunctionedacc9abrepo"]
+
+[default.global.parameters]
+region = "eu-west-2"

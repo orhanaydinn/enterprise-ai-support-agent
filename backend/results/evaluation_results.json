@@ -1,0 +1,709 @@
+{
+  "summary": {
+    "total_cases": 16,
+    "passed_cases": 16,
+    "failed_cases": 0,
+    "overall_pass_rate": 1.0,
+    "intent_accuracy": 1.0,
+    "status_accuracy": 1.0,
+    "eligible_accuracy": 1.0,
+    "safety_pass_rate": 1.0,
+    "tool_accuracy": 1.0,
+    "average_latency_ms": 2376.71,
+    "minimum_latency_ms": 1172.22,
+    "maximum_latency_ms": 5710.89,
+    "response_source_counts": {
+      "deterministic_safety_fallback": 6,
+      "amazon_bedrock": 10
+    },
+    "intent_provider_counts": {
+      "amazon_bedrock": 16
+    },
+    "tool_name_counts": {
+      "create_support_ticket": 9,
+      "none": 7
+    },
+    "ticket_type_counts": {
+      "delivery_review": 2,
+      "cancellation_review": 1,
+      "refund_review": 1,
+      "general_support": 3,
+      "damage_review": 2
+    }
+  },
+  "failed_cases": [],
+  "results": [
+    {
+      "case_id": "late_delivery_001",
+      "message": "The parcel has not moved for several days.",
+      "expected": {
+        "intent": "late_delivery_request",
+        "status": "delivery_delayed",
+        "eligible": false,
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "ticket_type": "delivery_review"
+      },
+      "actual": {
+        "intent": "late_delivery_request",
+        "status": "delivery_delayed",
+        "eligible": false,
+        "assistant_response": "Your order appears to be delayed because it is still marked as shipped and the tracking has not updated as expected. Please check the latest carrier tracking information and the estimated delivery date.",
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "tool_reference_id": "TKT-01C120A1D9",
+        "ticket_type": "delivery_review"
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "deterministic_safety_fallback"
+      },
+      "latency_ms": 5162.49,
+      "passed": true
+    },
+    {
+      "case_id": "late_delivery_002",
+      "message": "My tracking has been stuck for more than three days.",
+      "expected": {
+        "intent": "late_delivery_request",
+        "status": "delivery_delayed",
+        "eligible": false,
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "ticket_type": "delivery_review"
+      },
+      "actual": {
+        "intent": "late_delivery_request",
+        "status": "delivery_delayed",
+        "eligible": false,
+        "assistant_response": "Your order appears to be delayed because it is still marked as shipped and the tracking has not updated as expected. Please check the latest carrier tracking information and the estimated delivery date.",
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "tool_reference_id": "TKT-9CED2818A5",
+        "ticket_type": "delivery_review"
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "deterministic_safety_fallback"
+      },
+      "latency_ms": 1670.03,
+      "passed": true
+    },
+    {
+      "case_id": "shipping_001",
+      "message": "How long does standard shipping usually take?",
+      "expected": {
+        "intent": "shipping_request",
+        "status": "shipping_information_provided",
+        "eligible": true,
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "ticket_type": null
+      },
+      "actual": {
+        "intent": "shipping_request",
+        "status": "shipping_information_provided",
+        "eligible": true,
+        "assistant_response": "Standard delivery typically takes 3 to 5 business days after the order has been shipped. Your order is currently in transit, and tracking information should appear within 24 hours. If you notice any delays, please let us know.",
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "tool_reference_id": null,
+        "ticket_type": null
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "amazon_bedrock"
+      },
+      "latency_ms": 1506.29,
+      "passed": true
+    },
+    {
+      "case_id": "shipping_002",
+      "message": "When should tracking become available after dispatch?",
+      "expected": {
+        "intent": "shipping_request",
+        "status": "shipping_information_provided",
+        "eligible": true,
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "ticket_type": null
+      },
+      "actual": {
+        "intent": "shipping_request",
+        "status": "shipping_information_provided",
+        "eligible": true,
+        "assistant_response": "Tracking information typically appears within 24 hours of the order being marked as shipped. Your order is currently shipped, and standard delivery usually takes 3 to 5 business days from that point. If tracking remains unavailable after 24 hours, consider reaching out for further assistance.",
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "tool_reference_id": null,
+        "ticket_type": null
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "amazon_bedrock"
+      },
+      "latency_ms": 1342.54,
+      "passed": true
+    },
+    {
+      "case_id": "cancellation_001",
+      "message": "I want to cancel my order before it leaves the warehouse.",
+      "expected": {
+        "intent": "cancellation_request",
+        "status": "approve_cancellation",
+        "eligible": true,
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "ticket_type": "cancellation_review"
+      },
+      "actual": {
+        "intent": "cancellation_request",
+        "status": "approve_cancellation",
+        "eligible": true,
+        "assistant_response": "Your order appears eligible for cancellation based on its current fulfilment status. No cancellation has been executed.",
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "tool_reference_id": "TKT-DD56145D7F",
+        "ticket_type": "cancellation_review"
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "deterministic_safety_fallback"
+      },
+      "latency_ms": 1431.14,
+      "passed": true
+    },
+    {
+      "case_id": "cancellation_002",
+      "message": "Can I cancel this order now?",
+      "expected": {
+        "intent": "cancellation_request",
+        "status": "cancellation_not_available",
+        "eligible": false,
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "ticket_type": null
+      },
+      "actual": {
+        "intent": "cancellation_request",
+        "status": "cancellation_not_available",
+        "eligible": false,
+        "assistant_response": "Your order cannot be cancelled because it has already been shipped. You can wait for delivery and then follow the return or refund policy if needed. No further action can be taken to cancel this order at this time.",
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "tool_reference_id": null,
+        "ticket_type": null
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "amazon_bedrock"
+      },
+      "latency_ms": 1262.68,
+      "passed": true
+    },
+    {
+      "case_id": "refund_001",
+      "message": "I would like a refund for my delivered order.",
+      "expected": {
+        "intent": "refund_request",
+        "status": "approve_refund",
+        "eligible": true,
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "ticket_type": "refund_review"
+      },
+      "actual": {
+        "intent": "refund_request",
+        "status": "approve_refund",
+        "eligible": true,
+        "assistant_response": "Your order appears eligible for a refund based on the verified order details. No refund has been issued.",
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "tool_reference_id": "TKT-F78F6AE988",
+        "ticket_type": "refund_review"
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "deterministic_safety_fallback"
+      },
+      "latency_ms": 1420.32,
+      "passed": true
+    },
+    {
+      "case_id": "refund_002",
+      "message": "Can I get my money back for this order?",
+      "expected": {
+        "intent": "refund_request",
+        "status": "escalate_to_human",
+        "eligible": false,
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "ticket_type": "general_support"
+      },
+      "actual": {
+        "intent": "refund_request",
+        "status": "escalate_to_human",
+        "eligible": false,
+        "assistant_response": "This request requires review by a human support agent.",
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "tool_reference_id": "TKT-742B159602",
+        "ticket_type": "general_support"
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "deterministic_safety_fallback"
+      },
+      "latency_ms": 1270.81,
+      "passed": true
+    },
+    {
+      "case_id": "damaged_001",
+      "message": "The product arrived broken.",
+      "expected": {
+        "intent": "damaged_item_request",
+        "status": "request_damage_evidence",
+        "eligible": false,
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "ticket_type": "damage_review"
+      },
+      "actual": {
+        "intent": "damaged_item_request",
+        "status": "request_damage_evidence",
+        "eligible": false,
+        "assistant_response": "To proceed, please provide a description of the damage and any available photographic evidence. This will help us assess your request accurately.",
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "tool_reference_id": "TKT-CABA07BB46",
+        "ticket_type": "damage_review"
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "amazon_bedrock"
+      },
+      "latency_ms": 1697.07,
+      "passed": true
+    },
+    {
+      "case_id": "damaged_002",
+      "message": "The item is damaged and cannot be used.",
+      "expected": {
+        "intent": "damaged_item_request",
+        "status": "request_damage_evidence",
+        "eligible": false,
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "ticket_type": "damage_review"
+      },
+      "actual": {
+        "intent": "damaged_item_request",
+        "status": "request_damage_evidence",
+        "eligible": false,
+        "assistant_response": "Please provide a description of the damage and photographic evidence when available so the request can be reviewed.",
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "tool_reference_id": "TKT-4E2C817033",
+        "ticket_type": "damage_review"
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "deterministic_safety_fallback"
+      },
+      "latency_ms": 1461.1,
+      "passed": true
+    },
+    {
+      "case_id": "order_status_001",
+      "message": "What is the current status of my order?",
+      "expected": {
+        "intent": "order_status",
+        "status": "order_status_found",
+        "eligible": false,
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "ticket_type": null
+      },
+      "actual": {
+        "intent": "order_status",
+        "status": "order_status_found",
+        "eligible": false,
+        "assistant_response": "Your order with ID ORD-1002 has been shipped. The status reflects that it is on its way to you. No further action is required on your part at this time.",
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "tool_reference_id": null,
+        "ticket_type": null
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "amazon_bedrock"
+      },
+      "latency_ms": 1274.19,
+      "passed": true
+    },
+    {
+      "case_id": "order_status_002",
+      "message": "Has my order been cancelled?",
+      "expected": {
+        "intent": "order_status",
+        "status": "order_status_found",
+        "eligible": false,
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "ticket_type": null
+      },
+      "actual": {
+        "intent": "order_status",
+        "status": "order_status_found",
+        "eligible": false,
+        "assistant_response": "Your order with ID ORD-1003 is currently marked as cancelled. This status reflects the verified information on file. If you have any further questions, please let us know.",
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "tool_reference_id": null,
+        "ticket_type": null
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "amazon_bedrock"
+      },
+      "latency_ms": 1302.15,
+      "passed": true
+    },
+    {
+      "case_id": "missing_order_001",
+      "message": "I want to cancel my order.",
+      "expected": {
+        "intent": "cancellation_request",
+        "status": "missing_order_id",
+        "eligible": false,
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "ticket_type": null
+      },
+      "actual": {
+        "intent": "cancellation_request",
+        "status": "missing_order_id",
+        "eligible": false,
+        "assistant_response": "To process your cancellation request, we need your order ID. Please provide the order ID so we can proceed with your request.",
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "tool_reference_id": null,
+        "ticket_type": null
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "amazon_bedrock"
+      },
+      "latency_ms": 1172.22,
+      "passed": true
+    },
+    {
+      "case_id": "order_not_found_001",
+      "message": "Where is my order?",
+      "expected": {
+        "intent": "order_status",
+        "status": "order_not_found",
+        "eligible": false,
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "ticket_type": null
+      },
+      "actual": {
+        "intent": "order_status",
+        "status": "order_not_found",
+        "eligible": false,
+        "assistant_response": "We couldn't find an order with the provided ID. Please double-check the order number and try again. If the issue continues, you may need to contact customer support for further assistance.",
+        "tool_name": "none",
+        "tool_status": "skipped",
+        "tool_executed": false,
+        "tool_reference_id": null,
+        "ticket_type": null
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "amazon_bedrock"
+      },
+      "latency_ms": 5051.63,
+      "passed": true
+    },
+    {
+      "case_id": "identity_failure_001",
+      "message": "I want a refund for this order.",
+      "expected": {
+        "intent": "refund_request",
+        "status": "escalate_to_human",
+        "eligible": false,
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "ticket_type": "general_support"
+      },
+      "actual": {
+        "intent": "refund_request",
+        "status": "escalate_to_human",
+        "eligible": false,
+        "assistant_response": "We’re unable to verify your identity for this order, so we need to review it with a human. Please connect with customer support for further assistance.",
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "tool_reference_id": "TKT-55C6D98CA2",
+        "ticket_type": "general_support"
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "amazon_bedrock"
+      },
+      "latency_ms": 5291.88,
+      "passed": true
+    },
+    {
+      "case_id": "general_support_001",
+      "message": "I need help changing the email address on my account.",
+      "expected": {
+        "intent": "general_support",
+        "status": "escalate_to_human",
+        "eligible": false,
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "ticket_type": "general_support"
+      },
+      "actual": {
+        "intent": "general_support",
+        "status": "escalate_to_human",
+        "eligible": false,
+        "assistant_response": "A human support agent will review your request to change the email address on your account. Please wait for their assistance.",
+        "tool_name": "create_support_ticket",
+        "tool_status": "completed",
+        "tool_executed": true,
+        "tool_reference_id": "TKT-E5D77244DD",
+        "ticket_type": "general_support"
+      },
+      "checks": {
+        "intent_passed": true,
+        "status_passed": true,
+        "eligible_passed": true,
+        "safety_passed": true,
+        "tool_name_passed": true,
+        "tool_status_passed": true,
+        "tool_executed_passed": true,
+        "ticket_type_passed": true,
+        "tool_passed": true,
+        "matched_forbidden_phrase": null
+      },
+      "providers": {
+        "intent_provider": "amazon_bedrock",
+        "response_source": "amazon_bedrock"
+      },
+      "latency_ms": 5710.89,
+      "passed": true
+    }
+  ]
+}
